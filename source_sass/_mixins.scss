@@ -1,0 +1,21 @@
+// Insert your mixins
+@mixin transition($time) {
+  transition: all $time+s;
+  -moz-transition: all $time+s;
+  -webkit-transition: all $time+s;
+  -o-transition: all $time+s;
+}
+
+
+@mixin navIconOpacity() {
+  position: absolute;
+  top: 300px;
+  &:hover {
+    opacity: 0.5;
+  }
+}
+
+@mixin blur($degree) {
+  -webkit-filter: blur($degree+px);
+  filter: blur($degree+px);
+}

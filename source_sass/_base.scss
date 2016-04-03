@@ -1,0 +1,197 @@
+// Add any custom Sass & CSS here
+body {
+  background-color: $first-color;
+  background-image: url("../media/LinkmyProf.jpg");
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-size: cover;
+}
+
+.fullWidth {
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  max-width: initial;
+}
+
+.gallery-image {
+  height: 210px;
+  max-height: 100%;
+  &:hover {
+    @include transition(0.4);
+    opacity: 0.8;
+  }
+}
+
+.university_panel {
+  padding-left: 100px;
+  background-color: white;
+  filter: grayscale(20%);
+  opacity: 0.95;
+  z-index: 100;
+}
+
+.university_panel:before {
+  @include blur(0.8);
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: -1;
+  width: 100%;
+  height: 100%;
+  background-position: center bottom;
+  background-attachment: fixed;
+  background-color: rgba(255, 255, 255, 0.2);
+  filter: blur(5px);
+}
+
+.top-bar {
+  min-height: 15px;
+  display: inline-block;
+  background-color: $first-color;
+  z-index: 200;
+}
+
+#headmenu1 {
+  background-color: $first-color;
+}
+
+#navbar1 {
+  width: 100%;
+  margin: 0;
+  padding-top: 0px;
+  padding-bottom: 5px;
+  padding-left: 0;
+  padding-right: 0;
+  @include transition(0.4);
+  &.small {
+    height: 30px;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    opacity: 0.8;
+    @include blur(0.8);
+    a {
+      padding-top: 0;
+    }
+  }
+}
+
+#navbar3 {
+  top: 0;
+  left: 0;
+  right: 0;
+  position: fixed;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  background-color: $first-color;
+  opacity: 0.95;
+  @include transition(0.4);
+  a {
+    margin-right: 2.2%;
+  }
+}
+
+#Mobile-Title {
+  font-family: Oswald, sans-serif;
+  font-size: 18px;
+  margin-top: 20px;
+}
+
+.button {
+  font-family: Oswald, sans-serif;
+  font-size: 18px;
+  background-color: $first-color;
+  margin-bottom: 0;
+  @include transition(0.4);
+  &.smallb {
+    padding: 9px 9px 9px 9px;
+    font-size: 15px;
+  }
+}
+
+.top-bar-title {
+  i {
+    background-color: $first-color;
+    margin: 0;
+    border: 0;
+  }
+}
+
+.dropdown-pane {
+  padding-right: 50px;
+  width: 280px;
+  height: auto;
+  display: inline-block;
+  input {
+    width: 100px;
+  }
+  &.row {
+    width: 200px;
+    margin-left: 0;
+  }
+  div {
+    padding-left: 0;
+  }
+}
+
+.menu {
+  margin: 0;
+}
+
+.bodyStart {
+  margin-top: 45%;
+  padding-top: 5%;
+  background-color: $first-color;
+  border-color: $third-color;
+}
+
+#Ideas {
+  padding-top: 5%;
+  padding-bottom: 2%;
+  //vertically center sth
+  background-color: $first-color;
+}
+
+.imgCircle {
+  width: 70%;
+  border-radius: 50%;
+}
+
+#Team {
+  padding-top: 5%;
+  border-color: $third-color;
+  background-color: $first-color;
+  padding-bottom: 5%;
+}
+
+#Intro {
+  background-color: $first-color;
+  border-color: $third-color;
+}
+
+#Foot-container {
+  background-color: $second-color;
+
+}
+
+.Foot {
+  background-color: $third-color;
+  min-height: 70px;
+  padding-top: 3%;
+  padding-bottom: 3%;
+  position: relative;
+  top: 50%;
+  -webkit-transform: translateY(-50%);
+  -ms-transform: translateY(-50%);
+  transform: translateY(-50%);
+
+}
+
+h1 {
+  color: $third-color;
+}
+
+.views {
+  margin-top: 100px;
+}

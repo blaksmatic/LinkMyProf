@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Uinversity</title>
+</head>
+<body>
+<section class="row university_panel fullWidth">
+    <div>
+        <h1>The list of universities we have</h1>
+    </div>
+    <div>
+        <h1>Universities</h1>
+    </div>
+    <div class="small-12">
+        <div ng-repeat="univ in universities">
+            <a href="#/university/{{univ.name}}">
+                <div class="media-object">
+                    <div class="media-object-section">
+                        <div class="thumbnail">
+                            <img class="gallery-image" src={{univ.pic}}>
+                        </div>
+                    </div>
+                    <div class="media-object-section">
+                        <h3>{{univ.fullname}}</h3>
+                        <h3>Rank: {{univ.rank}}</h3>
+                        <h3>Location: {{univ.state}}</h3>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+    </div>
+</section>
+</body>
+</html>

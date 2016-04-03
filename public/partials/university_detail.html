@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div class="row university_panel fullWidth">
+    <h1>University</h1>
+    <h1>University Name gose here</h1>
+    <h1>Professors:</h1>
+    <div ng-repeat="prof in profs">
+        <a href="#/prof/{{prof.id}}">
+            <div class="media-object medium-8">
+                <div class="media-object-section">
+                    <div class="thumbnail">
+                        <img src={{prof.img}}>
+                    </div>
+                </div>
+                <div class="media-object-section">
+                    <h3>{{prof.name}}</h3>
+                    <h5>Title: {{prof.title}}</h5>
+                    <h5>Area: {{prof.area}}</h5>
+                </div>
+            </div>
+        </a>
+    </div>
+    addr: String,
+    img: String,
+    area: String,
+    url: String,
+    title: String,
+    phone: String,
+    email: String,
+    name: String,
+    id: Number,
+    univ: String
+</div>
+</body>
+</html>
