@@ -10,6 +10,7 @@ var ProfessorSchema = new Schema({
     email: String, 
     name: String,
     id: Number,
+    likes: Number,
     univ: String
 });
 
