@@ -122,44 +122,87 @@ var related = [
     ['nlp', 'natural', 'language', 'processing']
 ];
 
+function proflist(list, array, k, res){
+    if(k == array.length){
+    res.send(list);
+    }
+    else
+    {
+        var searchword = array[k];
+        console.log(searchword);
+        Professor.find({
+            $or: [{addr: {$regex: searchword, "$options": "i"}}, {name: {$regex: searchword, "$options": "i"}}, {
+                area: {$regex: searchword, "$options": "i"}}, {univ: {$regex: searchword, "$options": "i"}}]
+        }, function (err, Professor) {
+            var n = 0;
+            while(Professor[n]){
+                if(!contains(list, Professor[n])){
+                    list = list.concat(Professor[n]);
+                }
+                n++;
+            }
+            console.log(list);
+            proflist(list, array, k+1, res);
+        });
+    }
+    console.log(k);
+}
+
 app.get('/search/:info', function (req, res) {
-    var ProfAll;
-    var info = req.params.info;
+    var info = req.params.info.toLowerCase();
     var infoword = info.split(" ");
     var search = infoword;
 
-    for (i = 0; i < infoword.length; i++){
-        for (j = 0; j < related.length; j++){
-            if(contains(related[j],infoword[i].toLowerCase())){
+    for (i = 0; i < infoword.length; i++) {
+        for (j = 0; j < related.length; j++) {
+            if (contains(related[j], infoword[i])) {
+                var index = search.indexOf(infoword[i]);
+                if (index > -1) {
+                    search.splice(index, 1);
+                }
                 search = search.concat(related[j]);
             }
         }
     }
-    ProfAll = new Array();
+    var ProfAll = new Array();
+    console.log(search);
+    proflist(ProfAll, search, 0, res);
+})
+    /*for (k = 0; k < search.length; k++) {
 
-    //for (k = 0; k < search.length; k++) {
-        var searchword = search[0];
+    var searchword = search[k];
 
-        Professor.find({
-            $or: [{addr: {$regex: searchword, "$options": "i"}}, {name: {$regex: info, "$options": "i"}}, {
-                area: {
-                    $regex: searchword,
-                    "$options": "i"
-                }
-            }, {univ: {$regex: searchword, "$options": "i"}}]
-        }, function (err, Professor) {
-            res.send(Professor);
+    Professor.find({
+        $or: [{addr: {$regex: searchword, "$options": "i"}}, {name: {$regex: info, "$options": "i"}}, {
+            area: {
+                $regex: searchword,
+                "$options": "i"
+            }
+        }, {univ: {$regex: searchword, "$options": "i"}}]
+    }, function (err, Professor) {
+        Profinfo=Professor;
+        console.log(Profinfo);
+        var n = 0;
+         while(Professor[n]){
+         if(!contains(ProfAll, Professor[n])){
+         ProfAll = ProfAll.concat(Professor[n]);
+         }
+         n++;
+         }
+    });
+    console.log(Profinfo);
+}});*/
 
-            /*var n = 0;
-            while(Professor[n]){
-                if(!contains(ProfAll, Professor[n])){
-                    ProfAll = ProfAll.concat(Professor[n]);
-                }
-                n++;
-            }*/
-        });
-    //}
-});
+/*console.log(search);
+Professor.find({
+    $or: [{addr: {$regex: { $in: search}, "$options": "i"}}, {name: {$regex: { $in: search}, "$options": "i"}}, {
+        area: {$regex: { $in: search}, "$options": "i"}}, {univ:{$regex: { $in: search}, "$options": "i"}}]
+    /*$or: [{addr: { $in: search}}, {name: { $in: search}}, {area: { $in: search}},
+        {univ: { $in: search}}]
+}, function (err, Professor) {
+    res.send(Professor);
+});*/
+
 
 
 server.listen(3000);
