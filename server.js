@@ -71,21 +71,37 @@ app.post('/user/create', function (req, res) {
     User.create({username: req.body.username, password: req.body.password, interest: req.body.interest},
         function (err, User) {
             if (err) {
-                res.status(400)
+                res.status(400).send('create fails');
             } else {
-                res.send(req.body.username + " has been created!")
+                res.send(req.body.username + " has been created!");
             }
-            ;
+        });
+});
+//user login 
+app.post('/user/login', function (req, res) {
+    User.findOne({username: req.body.username, password: req.body.password},
+        function (err, User) {
+            if (err || User == null) {
+                res.status(404).send('login fails');
+            } else {
+                console.log(req.body.username + " has logged in");
+                res.status(200).send(User);
+            }
         });
 });
 //add favorprof 
 app.put('/user/addFavorProf', function (req, res) {
+
     User.findByIdAndUpdate(req.body.userid, {$push: {favorids: req.body.profid}},
         function (err, User) {
             if (err) {
                 res.status(400)
             } else {
-                res.send(req.body.userid + "'s favorprof has been updated!")
+                Professor.findByIdAndUpdate(req.body.profid, {$inc: {likes: 1}},function (err, User) {
+                    if (err) {
+                    res.status(400)
+                }});
+                res.send(req.body.userid + "'s favorprof has been updated!");
             }
             ;
         });
@@ -141,7 +157,6 @@ function proflist(list, array, k, res){
                 }
                 n++;
             }
-            console.log(list);
             proflist(list, array, k+1, res);
         });
     }
@@ -168,40 +183,7 @@ app.get('/search/:info', function (req, res) {
     console.log(search);
     proflist(ProfAll, search, 0, res);
 })
-    /*for (k = 0; k < search.length; k++) {
 
-    var searchword = search[k];
-
-    Professor.find({
-        $or: [{addr: {$regex: searchword, "$options": "i"}}, {name: {$regex: info, "$options": "i"}}, {
-            area: {
-                $regex: searchword,
-                "$options": "i"
-            }
-        }, {univ: {$regex: searchword, "$options": "i"}}]
-    }, function (err, Professor) {
-        Profinfo=Professor;
-        console.log(Profinfo);
-        var n = 0;
-         while(Professor[n]){
-         if(!contains(ProfAll, Professor[n])){
-         ProfAll = ProfAll.concat(Professor[n]);
-         }
-         n++;
-         }
-    });
-    console.log(Profinfo);
-}});*/
-
-/*console.log(search);
-Professor.find({
-    $or: [{addr: {$regex: { $in: search}, "$options": "i"}}, {name: {$regex: { $in: search}, "$options": "i"}}, {
-        area: {$regex: { $in: search}, "$options": "i"}}, {univ:{$regex: { $in: search}, "$options": "i"}}]
-    /*$or: [{addr: { $in: search}}, {name: { $in: search}}, {area: { $in: search}},
-        {univ: { $in: search}}]
-}, function (err, Professor) {
-    res.send(Professor);
-});*/
 
 
 
