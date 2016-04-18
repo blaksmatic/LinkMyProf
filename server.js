@@ -91,19 +91,17 @@ app.post('/user/login', function (req, res) {
 });
 //add favorprof 
 app.put('/user/addFavorProf', function (req, res) {
-
-    User.findByIdAndUpdate(req.body.userid, {$push: {favorids: req.body.profid}},
+    User.update({username: req.body.username}, {$push: {favorids: req.body.profid}},
         function (err, User) {
             if (err) {
                 res.status(400)
             } else {
-                Professor.findByIdAndUpdate(req.body.profid, {$inc: {likes: 1}},function (err, User) {
+                Professor.update({id: req.body.profid}, {$inc: {likes: 1}},function (err, User) {
                     if (err) {
                     res.status(400)
                 }});
-                res.send(req.body.userid + "'s favorprof has been updated!");
+                res.send(req.body.username + "'s favorprof has been updated!");
             }
-            ;
         });
 })
 
@@ -184,8 +182,59 @@ app.get('/search/:info', function (req, res) {
     proflist(ProfAll, search, 0, res);
 })
 
+//return one user's infomation
+app.get('/user/info/:username', function(req, res){
+    User.find({username: req.params.username}, function (err, User){
+        res.send(User[0]);
+    });
+});
 
+//compare currrent user with reference user
+app.post('/user/compare', function (req, res) {
+    User.find({username: req.body.currUname}, function (err, User) {
+        var curUfavor = User[0].favorids;
+        mongoose.model('User').find({username: req.body.refUname}, function (err, User) {
+            var refUfavor = User[0].favorids;
+            var simi = 0;
+            for (i = 0; i < curUfavor.length; i++) {
+                if (contains(refUfavor, curUfavor[i])) {
+                    simi++;
+                }
+            }
+            res.send({simi});
+        })
+    })
+})
 
+//return a list of username and descending similarity
+function sortByKey(array, key) {
+    return array.sort(function(a, b) {
+        var x = a[key]; var y = b[key];
+        return ((x < y) ? -1 : ((x > y) ? 1 : 0));
+    });
+}
+
+app.get('/user/similist/:username', function(req,res) {
+    User.find({username: req.params.username}, function (err, User){
+        var curUfavor = User[0].favorids;
+        mongoose.model('User').find({username: {$ne: req.params.username}}, function (err, User) {
+            var favorlist = new Array();
+            for(i = 0; i < User.length; i++){
+                var simi = 0;
+                for (j = 0; j < User[i].favorids.length; j++) {
+                    if (contains(curUfavor, User[i].favorids[j])) {
+                        simi++;
+                    }
+                }
+                refUname = User[i].username;
+                favorlist.push({ refUname,simi});
+            }
+            favorlist = sortByKey(favorlist, 'simi')
+            res.send(favorlist.reverse());
+        })
+
+    });
+})
 
 server.listen(3000);
 console.log("Server listen to 3000");
