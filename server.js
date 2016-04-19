@@ -67,8 +67,8 @@ app.get('/uinfo/:uname', function (req, res) {
 });
 //create user
 app.post('/user/create', function (req, res) {
-    //res.send('username: ' + req.body.username + '  password: ' + req.body.password + '  interest: ' +  req.body.interest);
-    User.create({username: req.body.username, password: req.body.password, interest: req.body.interest},
+    console.log('username: ' + req.body.username + '  password: ' + req.body.password + '  interest: ' +  req.body.interest);
+    User.create({username: req.body.username, password: req.body.password, interest: req.body.interest, location: req.body.location},
         function (err, User) {
             if (err) {
                 res.status(400).send('create fails');
@@ -227,14 +227,138 @@ app.get('/user/similist/:username', function(req,res) {
                     }
                 }
                 refUname = User[i].username;
-                favorlist.push({ refUname,simi});
+                favorlist.push([refUname,simi]);
             }
-            favorlist = sortByKey(favorlist, 'simi')
+            favorlist = sortByKey(favorlist, 'simi');
             res.send(favorlist.reverse());
         })
 
     });
 })
 
+//return recommend beasd on one's similarity, location, and interest.
+var stateloca = [
+    ['CA','AZ','WA','OR'],
+    ['IL', 'IN', 'IA', 'KS', 'MI', 'MN', 'MO', 'NE', 'ND', 'OH'],
+    ['CT','DE','DC','GA','MD','MA', 'NJ','NH','NY','PA','RI','VT']
+];
+
+function indByInterst(list, array, k, curUname, req, res){
+    if(k == array.length){
+        for (i = 0; i < list.length; i++) {
+            User.update({username: curUname}, {$push: {profRecIndex: {profid: list[i].id, ind: 0.35+0.1*Math.random()}}},
+                function (err, User) {});
+        }
+        User.find({username: curUname}, function (err, finalUser) {
+            res.status(400).send(finalUser[0].profRecIndex);
+        })
+    }
+    else
+    {
+        var searchword = array[k];
+        //console.log(searchword);
+        Professor.find({ area: {$regex: searchword, "$options": "i"}}, function (err, Professor) {
+            var n = 0;
+            while(Professor[n]){
+                if(!contains(list, Professor[n])){
+                    list = list.concat(Professor[n]);
+                }
+                n++;
+            }
+            indByInterst(list, array, k+1,curUname,req, res);
+        });
+    }
+    //console.log(k);
+}
+
+app.get('/user/calRec/:username', function(req, res){
+    User.update({username: req.params.username}, {$set: {profRecIndex: []}}, function (err, currUser){});
+    User.find({username: req.params.username}, function (err, currUser1){
+        //related index with location
+        var currLoca = new Array();
+        currLoca = currLoca.concat(currUser1[0].location);
+        for (i = 0; i < stateloca.length; i++) {
+            if (contains(stateloca[i], currUser1[0].location)) {
+                var index = currLoca.indexOf(currUser1[0].location);
+                if (index > -1) {
+                    currLoca.splice(index, 1);
+                }
+                currLoca = currLoca.concat(stateloca[i]);
+            }
+        }
+        //console.log(currLoca);
+        var profindex = [];
+        Professor.find({},function(err, curProfessor){
+            for(i =0; i < curProfessor.length; i++) {
+                //pid = curProfessor[i].id;
+                //console.log(i+' '+curProfessor[i].id+' '+curProfessor[i].loca);
+                if (contains(currLoca, curProfessor[i].loca)){
+                    User.update({username: req.params.username}, {$push: {profRecIndex: {profid: curProfessor[i].id, ind: 0.25+0.1*Math.random()}}},
+                        function (err, User) {});
+                }
+                else {
+                    User.update({username: req.params.username}, {$push: {profRecIndex: {profid: curProfessor[i].id, ind: 0.0}}},
+                        function (err, User) {});
+                }
+            }
+
+        })
+        //related index with likes
+        var curUfavor = currUser1[0].favorids;
+        User.find({username: {$ne: req.params.username}}, function (err, refUser) {
+            var favorlist = new Array();
+            for (i = 0; i < User.length; i++) {
+                var simi = 0;
+                for (j = 0; j < refUser[i].favorids.length; j++) {
+                    if (contains(curUfavor, refUser[i].favorids[j])) {
+                        simi++;
+                    }
+                }
+                refUname = refUser[i].username;
+                favorlist.push([refUname, simi]);
+            }
+            //favorlist = sortByKey(favorlist, 'simi')
+            //favorlist = favorlist.reverse;
+            console.log();
+            User.find({username: favorlist[0][0]}, function (err, refUser2) {
+                var simiidlist = refUser2[0].favorids;
+                for (i = 0; i < simiidlist.length; i++) {
+                    User.update({username: req.params.username}, {$push: {profRecIndex: {profid: simiidlist[i], ind: 0.1+0.1*Math.random()}}},
+                        function (err, User) {});
+                }
+            })
+        })
+        //related index with interest
+        var info = currUser1[0].interest.toLowerCase();
+        if(info != null){
+            var infoword = info.split(" ");
+            var search = infoword;
+
+            for (i = 0; i < infoword.length; i++) {
+                for (j = 0; j < related.length; j++) {
+                    if (contains(related[j], infoword[i])) {
+                        var index = search.indexOf(infoword[i]);
+                        if (index > -1) {
+                            search.splice(index, 1);
+                        }
+                        search = search.concat(related[j]);
+                    }
+                }
+            }
+            var ProfAll = new Array();
+            indByInterst(ProfAll, search, 0, req.params.username, req, res);
+        }
+
+    });
+});
+//get one's profRecIndex
+app.get('/user/getRec/:username', function(req, res){
+    User.find({username: req.params.username}, function (err, finalUser) {
+        res.status(400).send(finalUser[0].profRecIndex);
+    })
+})
+/**/
+
+//User.update({username: 'newtest1'}, {profRecIndex: {profid: 2257, ind:1.23}}, function (err, User) {});
 server.listen(3000);
 console.log("Server listen to 3000");
