@@ -89,6 +89,20 @@ app.post('/user/login', function (req, res) {
             }
         });
 });
+
+//modify user interest
+app.post('/user/modInt', function (req, res) {
+    //console.log('username: ' + req.body.username + '  password: ' + req.body.password + '  interest: ' +  req.body.interest);
+    User.update({username: req.body.username},{interest: req.body.value},
+        function (err, User) {
+            if (err) {
+                res.status(400).send('modify fails');
+            } else {
+                res.send(req.body.username + "'s interest has been modified!");
+            }
+        });
+});
+
 //add favorprof
 app.put('/user/addFavorProf', function (req, res) {
     User.update({username: req.body.username}, {$push: {favorids: req.body.profid}},
@@ -103,6 +117,39 @@ app.put('/user/addFavorProf', function (req, res) {
                 res.send(req.body.username + "'s favorprof has been updated!");
             }
         });
+})
+
+//delete favorprof
+app.put('/user/DelFavorProf', function (req, res) {
+    User.find({username: req.body.username},
+        function (err, curUser) {
+            if (err) {
+                res.status(400)
+            } else {
+                var curlist = curUser[0].favorids;
+                if (contains(curlist, req.body.profid)) {
+                    var index = curlist(req.body.profid);
+                    if (index > -1) {
+                        curlist.splice(index, 1);
+                    }
+                    Professor.update({id: req.body.profid}, {$inc: {likes: -1}}, function (err, User) {
+                        if (err) {
+                            res.status(400)
+                        }
+                    });
+                    User.update({username: req.body.username}, {favorids: curlist},
+                        function (err, User) {
+                            if (err) {
+                                res.status(400)
+                            }
+                            else {
+                                res.send(req.body.username + "'s favorprof " + req.body.profid + " has been deleted!");
+                            }
+                        });
+                }
+
+                }
+        })
 })
 
 //create comment
@@ -158,7 +205,7 @@ function proflist(list, array, k, res){
             proflist(list, array, k+1, res);
         });
     }
-    console.log(k);
+    //console.log(k);
 }
 
 app.get('/search/:info', function (req, res) {
@@ -250,7 +297,7 @@ function indByInterst(list, array, k, curUname, req, res){
                 function (err, User) {});
         }
         User.find({username: curUname}, function (err, finalUser) {
-            res.status(400).send(finalUser[0].profRecIndex);
+            res.status(200).send(finalUser[0].profRecIndex);
         })
     }
     else
@@ -354,7 +401,7 @@ app.get('/user/calRec/:username', function(req, res){
 //get one's profRecIndex
 app.get('/user/getRec/:username', function(req, res){
     User.find({username: req.params.username}, function (err, finalUser) {
-        res.status(400).send(finalUser[0].profRecIndex);
+        res.status(200).send(finalUser[0].profRecIndex);
     })
 })
 /**/
