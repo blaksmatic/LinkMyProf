@@ -5,10 +5,10 @@
     <title>Title</title>
 </head>
 <body>
-<h1>Professor detail</h1>
-<section class="row fullWidth university_panel">
+<section class="row fullWidth prof_panel">
+    <h2 class="welcome-title text-center">{{profs.name}}</h2>
+    <h2 class="welcome-title text-center">{{profs.univ}}</h2>
     <div class="media-object medium-8 ">
-        <h2>{{profs.name}}</h2>
         <div class="media-object-section">
             <div class="thumbnail">
                 <img src={{profs.img}}>
@@ -16,7 +16,15 @@
         </div>
         <div class="media-object-section">
             <h5>Title: {{profs.title}}</h5>
-            <h5>Area: {{profs.area}}</h5>
+            <h5>Interest: {{profs.area}}</h5>
+        </div>
+        <div class="media-object-section">
+            <h5>Fav Match:</h5>
+            <p></p>
+            <h5>Area match:</h5>
+            <p></p>
+            <h5>Popularity match:</h5>
+            <p></p>
         </div>
     </div>
 

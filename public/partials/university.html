@@ -5,31 +5,38 @@
     <title>Uinversity</title>
 </head>
 <body>
-<section class="row university_panel fullWidth">
+<section class="row university_panel fullWidth homepage">
     <div>
-        <h1>The list of universities we have</h1>
-    </div>
-    <div>
-        <h1>Universities</h1>
+        <h2 class="welcome-title text-center">Universities list</h2>
+        <h4 class="normal-title text-center">Following is the list of universities that in our database</h4>
+        <h4 class="normal-title text-center">Click to go to its detail</h4>
     </div>
     <div class="small-12">
-        <div ng-repeat="univ in universities">
+        <div ng-repeat="univ in universities | startFrom: pagination.page * pagination.perPage | limitTo: pagination.perPage">
             <a href="#/university/{{univ.name}}">
-                <div class="media-object">
+                <div class="media-object ">
                     <div class="media-object-section">
                         <div class="thumbnail">
                             <img class="gallery-image" src={{univ.pic}}>
                         </div>
                     </div>
                     <div class="media-object-section">
-                        <h3>{{univ.fullname}}</h3>
-                        <h3>Rank: {{univ.rank}}</h3>
-                        <h3>Location: {{univ.state}}</h3>
+                        <h5>{{univ.fullname}}</h5>
+                        <h5>Rank: {{univ.rank}}</h5>
+                        <h5>Location: {{univ.state}}</h5>
                     </div>
                 </div>
             </a>
         </div>
-
+        <ul class="pagination">
+            <li><a href="" class="button success" ng-hide="pagination.page == 0"
+                   ng-click="pagination.prevPage()">&laquo;</a></li>
+            <li ng-repeat="n in [] | range: pagination.numPages" ng-class="{active: n == pagination.page}">
+                <a href="" ng-click="pagination.toPageId(n)">{{n + 1}}</a>
+            </li>
+            <li><a href="" class="button success" ng-hide="pagination.page + 1 >= pagination.numPages"
+                   ng-click="pagination.nextPage()">&raquo;</a></li>
+        </ul>
     </div>
 </section>
 </body>

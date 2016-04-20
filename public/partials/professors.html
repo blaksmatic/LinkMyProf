@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Professors</title>
+</head>
+<body>
+<div class="row prof_search_panel fullWidth">
+    <h2 class="u-title text-center">Search Result</h2>
+    <h2 class="filter-title">Filter</h2>
+    <div class="medium-6">
+        <input type="text" id="prof-Input" ng-model="input_title" placeholder="Filter" autofocus>
+        <select ng-model="asscending" ng-options="option.name for option in assOption"></select>
+    </div>
+
+    <div ng-repeat="prof in suggest | filter:input_title | orderBy:order:asscending.Asscend | startFrom: pagination.page * pagination.perPage | limitTo: pagination.perPage">
+        <a href="#/prof/{{prof.id}}">
+            <div class="media-object medium-8 medium-3">
+                <div class="media-object-section">
+                    <div class="thumbnail">
+                        <img class="pro-img" src={{prof.img}}>
+                    </div>
+                </div>
+                <div class="media-object-section medium-9">
+                    <h3>{{prof.name}}</h3>
+                    <h5>Title: {{prof.title}}</h5>
+                    <h5>Area: {{prof.area}}</h5>
+                    <h5>University: {{prof.univ}}</h5>
+                </div>
+                <div class="media-object-section">
+                    <button class="button success small" ng-show="login"
+                            ng-click="add_fav(prof); $event.stopPropagation();">+Favorite
+                    </button>
+                </div>
+            </div>
+        </a>
+    </div>
+    <ul class="pagination">
+        <li><a href="" class="button success small" ng-hide="pagination.page == 0"
+               ng-click="pagination.prevPage()">&laquo;</a></li>
+        <li ng-repeat="n in [] | range: pagination.numPages" ng-class="{active: n == pagination.page}">
+            <a href="" ng-click="pagination.toPageId(n)">{{n + 1}}</a>
+        </li>
+        <li><a href="" class="button success small" ng-hide="pagination.page + 1 >= pagination.numPages"
+               ng-click="pagination.nextPage()">&raquo;</a></li>
+    </ul>
+
+</div>
+</body>
+</html>

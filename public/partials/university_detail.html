@@ -5,36 +5,44 @@
     <title>Title</title>
 </head>
 <body>
-<div class="row university_panel fullWidth">
-    <h1>University</h1>
-    <h1>University Name gose here</h1>
-    <h1>Professors:</h1>
-    <div ng-repeat="prof in profs">
-        <a href="#/prof/{{prof.id}}">
-            <div class="media-object medium-8">
-                <div class="media-object-section">
-                    <div class="thumbnail">
-                        <img src={{prof.img}}>
-                    </div>
+<div class="row prof_search_panel fullWidth">
+    <h2 class="u-title text-center">{{current_u.fullname}}</h2>
+    <h2 class="u-title text-center">{{current_u.state}}</h2>
+
+    <div ng-repeat="prof in profs | startFrom: pagination.page * pagination.perPage | limitTo: pagination.perPage">
+
+        <div class=" medium-8">
+            <div class="media-object-section medium-3">
+                <div class="thumbnail">
+                    <a href="#/prof/{{prof.id}}">
+                        <img class="pro-img" src={{prof.img}}>
+                    </a>
                 </div>
-                <div class="media-object-section">
+            </div>
+            <div class="media-object-section medium-9">
+                <a href="#/prof/{{prof.id}}">
                     <h3>{{prof.name}}</h3>
                     <h5>Title: {{prof.title}}</h5>
                     <h5>Area: {{prof.area}}</h5>
-                </div>
+                </a>
             </div>
-        </a>
+            <div class="media-object-section">
+                <button class="button success small" ng-show="login" ng-click="add_fav(prof); $event.stopPropagation();">+Favorite
+                </button>
+            </div>
+
+        </div>
+
     </div>
-    addr: String,
-    img: String,
-    area: String,
-    url: String,
-    title: String,
-    phone: String,
-    email: String,
-    name: String,
-    id: Number,
-    univ: String
+    <ul class="pagination">
+        <li><a href="" class="button success" ng-hide="pagination.page == 0"
+               ng-click="pagination.prevPage()">&laquo;</a></li>
+        <li ng-repeat="n in [] | range: pagination.numPages" ng-class="{active: n == pagination.page}">
+            <a href="" ng-click="pagination.toPageId(n)">{{n + 1}}</a>
+        </li>
+        <li><a href="" class="button success" ng-hide="pagination.page + 1 >= pagination.numPages"
+               ng-click="pagination.nextPage()">&raquo;</a></li>
+    </ul>
 </div>
 </body>
 </html>

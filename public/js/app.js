@@ -1,10 +1,10 @@
-var app=angular.module("mainApp",["ngRoute"]);
+var app=angular.module("mainApp",['ngRoute','simplePagination']);
 
 app.config(function ($routeProvider) {
     $routeProvider
         .when('/university', {
             templateUrl : './partials/university.html',
-            controller: 'universtiyController'
+            controller: 'universityController'
         })
         .when('/prof/:id', {
             templateUrl : './partials/professor_detail.html',
@@ -18,11 +18,13 @@ app.config(function ($routeProvider) {
             templateUrl : './partials/university_detail.html',
             controller: 'detailController'
         })
+        .when('/professors',{
+            templateUrl : './partials/professors.html',
+            controller: 'mainController'
+        })
         .when('/home',{
             templateUrl : './partials/home.html'
         })
-        .when('/',{
-            templateUrl : './partials/home.html'
-        })
+
 
 });

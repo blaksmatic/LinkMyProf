@@ -14,8 +14,35 @@ body {
   max-width: initial;
 }
 
+.university_panel {
+  padding-left: 100px;
+  z-index: 100;
+  background-color: rgba(255, 255, 255, .95);
+  filter: blur(10px);
+}
+
+.media-object:before {
+  filter: blur(5px);
+}
+
+input {
+  color: coral;
+}
+
+.selections {
+  margin-top: 35%;
+  .button {
+    font-size: 25px;
+    font-weight: 500;
+  }
+}
+
+.button {
+  color: #3adb76;
+}
+
 .gallery-image {
-  height: 210px;
+  height: 140px;
   max-height: 100%;
   &:hover {
     @include transition(0.4);
@@ -23,85 +50,11 @@ body {
   }
 }
 
-.university_panel {
-  padding-left: 100px;
-  background-color: white;
-  filter: grayscale(20%);
-  opacity: 0.95;
-  z-index: 100;
-}
-
-.university_panel:before {
-  @include blur(0.8);
-  position: absolute;
-  top: 0;
-  left: 0;
-  z-index: -1;
-  width: 100%;
-  height: 100%;
-  background-position: center bottom;
-  background-attachment: fixed;
-  background-color: rgba(255, 255, 255, 0.2);
-  filter: blur(5px);
-}
-
-.top-bar {
-  min-height: 15px;
-  display: inline-block;
-  background-color: $first-color;
-  z-index: 200;
-}
-
-#headmenu1 {
-  background-color: $first-color;
-}
-
-#navbar1 {
-  width: 100%;
-  margin: 0;
-  padding-top: 0px;
-  padding-bottom: 5px;
-  padding-left: 0;
-  padding-right: 0;
-  @include transition(0.4);
-  &.small {
-    height: 30px;
-    width: 100%;
-    margin: 0;
-    padding: 0;
-    opacity: 0.8;
-    @include blur(0.8);
-    a {
-      padding-top: 0;
-    }
-  }
-}
-
-#navbar3 {
-  top: 0;
-  left: 0;
-  right: 0;
-  position: fixed;
-  padding-top: 5px;
-  padding-bottom: 5px;
-  background-color: $first-color;
-  opacity: 0.95;
-  @include transition(0.4);
-  a {
-    margin-right: 2.2%;
-  }
-}
-
-#Mobile-Title {
-  font-family: Oswald, sans-serif;
-  font-size: 18px;
-  margin-top: 20px;
-}
-
 .button {
-  font-family: Oswald, sans-serif;
-  font-size: 18px;
-  background-color: $first-color;
+  font-family: "Oswald Regular";
+  font-size: 20px;
+  color: coral;
+  background-color: transparent;
   margin-bottom: 0;
   @include transition(0.4);
   &.smallb {
@@ -110,33 +63,22 @@ body {
   }
 }
 
-.top-bar-title {
-  i {
-    background-color: $first-color;
-    margin: 0;
-    border: 0;
-  }
+.search_area {
+  //margin-top: 12%;
 }
 
-.dropdown-pane {
-  padding-right: 50px;
-  width: 280px;
-  height: auto;
-  display: inline-block;
-  input {
-    width: 100px;
-  }
-  &.row {
-    width: 200px;
-    margin-left: 0;
-  }
-  div {
-    padding-left: 0;
-  }
+.search_bar {
+  background-color: transparent;
+  font-family: "Oswald Regular";
+  font-size: 18px;
+  border: none;
+  white-space: nowrap;
+  color: coral;
 }
 
-.menu {
-  margin: 0;
+.close-button {
+  top: -10px;
+  right: 5px;
 }
 
 .bodyStart {
@@ -185,13 +127,145 @@ body {
   -webkit-transform: translateY(-50%);
   -ms-transform: translateY(-50%);
   transform: translateY(-50%);
+}
+
+/***********************
+ * Essential Structure *
+ ***********************/
+.flexsearch--wrapper {
+  height: auto;
+  width: auto;
+  max-width: 100%;
+  overflow: hidden;
+  background: transparent;
+  margin-top: 6%;
+}
+
+.flexsearch--form {
+  overflow: hidden;
+  position: relative;
+  background: transparent;
+}
+
+.flexsearch--input-wrapper {
+  padding: 0 66px 0 0; /* Right padding for submit button width */
+  overflow: hidden;
+}
+
+.flexsearch--input {
+  width: 100%;
+}
+
+/***********************
+ * Configurable Styles *
+ ***********************/
+.flexsearch {
+  padding: 0 25px 0 200px; /* Padding for other horizontal elements */
+}
+
+.flexsearch--input {
+  -webkit-box-sizing: content-box;
+  background: transparent;
+  box-sizing: content-box;
+  height: 60px;
+  padding: 0 46px 0 10px;
+  border-color: coral;
+  border-radius: 35px; /* (height/2) + border-width */
+  border-style: solid;
+  border-width: 5px;
+  margin-top: 15px;
+  color: coral;
+  font-family: 'Helvetica', sans-serif;
+  font-size: 26px;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+}
+
+.flexsearch--submit {
+  position: absolute;
+  right: 0;
+  top: 0;
+  display: block;
+  width: 60px;
+  height: 60px;
+  padding: 0;
+  border: none;
+  margin-top: 20px; /* margin-top + border-width */
+  margin-right: 5px; /* border-width */
+  background: transparent;
+  color: darkorange;
+  font-family: 'Helvetica', sans-serif;
+  font-size: 40px;
+  line-height: 60px;
 
 }
 
-h1 {
-  color: $third-color;
+.flexsearch--input:focus {
+  outline: none;
+  border-color: darkorange;
 }
 
-.views {
-  margin-top: 100px;
+.flexsearch--input:focus.flexsearch--submit {
+  color: #333;
+}
+
+.flexsearch--submit:hover {
+  color: #333;
+  cursor: pointer;
+}
+
+::-webkit-input-placeholder {
+  color: #888;
+}
+
+h3 {
+  font-family: "Oswald Regular";
+  color: darkorange;
+}
+
+h5 {
+  font-family: "Helvetica Neue";
+  color: darkslategray;
+}
+
+.normal-title {
+  margin: 5%;
+  font-family: "Oswald Regular";
+  color: coral;
+}
+
+.welcome-title {
+  margin: 5%;
+  font-family: "Oswald Regular";
+  color: coral;
+  font-size: 35px;
+}
+
+.homepage {
+  padding-bottom: 10%;
+}
+
+.u-title {
+  @extend .welcome-title;
+  font-size: 45px;
+}
+
+.pro-img {
+  @extend .gallery-image;
+  height: 130px;
+}
+
+.prof_panel {
+  @extend .university_panel;
+  padding-bottom: 10%;
+}
+
+.filter-title {
+  @extend .normal-title;
+  margin-left: 0;
+}
+
+.prof_search_panel {
+  @extend .university_panel;
+  padding-bottom: 10%;
 }
