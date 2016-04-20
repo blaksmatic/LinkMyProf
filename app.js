@@ -297,7 +297,12 @@ function indByInterst(list, array, k, curUname, req, res){
                 function (err, User) {});
         }
         User.find({username: curUname}, function (err, finalUser) {
-            res.status(200).send(finalUser[0].profRecIndex);
+            if(err){
+                res.send(400);
+            }
+            else{
+                res.status(200).send(finalUser[0].profRecIndex);
+            }
         })
     }
     else
@@ -401,7 +406,12 @@ app.get('/user/calRec/:username', function(req, res){
 //get one's profRecIndex
 app.get('/user/getRec/:username', function(req, res){
     User.find({username: req.params.username}, function (err, finalUser) {
-        res.status(200).send(finalUser[0].profRecIndex);
+        if(err){
+            res.send(400);
+        }
+        else{
+            res.status(200).send(finalUser[0].profRecIndex);
+        }
     })
 })
 /**/
