@@ -470,6 +470,55 @@ app.get('/user/getRec/:username', function(req, res){
         }
     })
 })
+//get one's index with one professor
+app.get('/user/getOneRec/:username/:profid', function(req, res){
+    User.find({username: req.params.username}, function (err, finalUser) {
+        if(err){
+            res.send(400);
+        }
+        else{
+            var profIndData = new Array();
+            Professor.find({id: req.params.profid}, function(err, curProf){
+                var areaInd = 0;
+                var inteInd = 0;
+                var simiInd = 0;
+                for(j = 0; j < finalUser[0].profRecIndex.length; j++){
+                    if(curProf[0].id == finalUser[0].profRecIndex[j].profid){
+                        if(finalUser[0].profRecIndex[j].field == 'area'){
+                            areaInd = finalUser[0].profRecIndex[j].ind;
+                        }
+                        else if(finalUser[0].profRecIndex[j].field == 'interest'){
+                            inteInd = finalUser[0].profRecIndex[j].ind;
+                        }
+                        else if(finalUser[0].profRecIndex[j].field == 'popularity'){
+                            simiInd = finalUser[0].profRecIndex[j].ind;
+                        }
+                    }
+                    //curProf[i].totalInd = curProf[i].areaInd + curProf[i].inteInd + curProf[i].simiInd;
+                }
+                var curdata = {
+                    addr: curProf[0].addr,
+                    img: curProf[0].img,
+                    area: curProf[0].area,
+                    url: curProf[0].url,
+                    title: curProf[0].title,
+                    phone: curProf[0].phone,
+                    email: curProf[0].email,
+                    name: curProf[0].name,
+                    id: curProf[0].id,
+                    likes: curProf[0].likes,
+                    univ: curProf[0].univ,
+                    loca: curProf[0].loca,
+                    areaInd: areaInd, //area(location) index
+                    inteInd: inteInd, //interest index
+                    simiInd: simiInd, //similarity index
+                    totalInd: areaInd+inteInd+simiInd //total index
+                };
+                res.send(curdata);
+            })
+        }
+    })
+})
 /**/
 
 //User.update({username: 'newtest1'}, {profRecIndex: {profid: 2257, ind:1.23}}, function (err, User) {});
