@@ -289,19 +289,72 @@ var stateloca = [
     ['IL', 'IN', 'IA', 'KS', 'MI', 'MN', 'MO', 'NE', 'ND', 'OH'],
     ['CT','DE','DC','GA','MD','MA', 'NJ','NH','NY','PA','RI','VT']
 ];
+function sortByKeyDec(array, key) {
+    return array.sort(function(a, b) {
+        var x = a[key]; var y = b[key];
+        return ((x > y) ? -1 : ((x < y) ? 1 : 0));
+    });
+}
+function profRecList(list,res, callback){
+    var profIndData = new Array();
+    Professor.find({}, function(err, curProf){
+        for(i = 0; i < curProf.length; i++){
+            var areaInd = 0;
+            var inteInd = 0;
+            var simiInd = 0;
+            for(j = 0; j < list.length; j++){
+                if(curProf[i].id == list[j].profid){
+                    if(list[j].field == 'area'){
+                        areaInd = list[j].ind;
+                    }
+                    else if(list[j].field == 'interest'){
+                        inteInd = list[j].ind;
+                    }
+                    else if(list[j].field == 'popularity'){
+                        simiInd = list[j].ind;
+                    }
+                }
+                //curProf[i].totalInd = curProf[i].areaInd + curProf[i].inteInd + curProf[i].simiInd;
+            }
+            var curdata = {
+                addr: curProf[i].addr,
+                img: curProf[i].img,
+                area: curProf[i].area,
+                url: curProf[i].url,
+                title: curProf[i].title,
+                phone: curProf[i].phone,
+                email: curProf[i].email,
+                name: curProf[i].name,
+                id: curProf[i].id,
+                likes: curProf[i].likes,
+                univ: curProf[i].univ,
+                loca: curProf[i].loca,
+                areaInd: areaInd, //area(location) index
+                inteInd: inteInd, //interest index
+                simiInd: simiInd, //similarity index
+                totalInd: areaInd+inteInd+simiInd //total index
+            };
+            
+            profIndData = profIndData.concat(curdata);
+        }
+        callback(profIndData, res);
+    })
+}
 
 function indByInterst(list, array, k, curUname, req, res){
     if(k == array.length){
         for (i = 0; i < list.length; i++) {
-            User.update({username: curUname}, {$push: {profRecIndex: {profid: list[i].id, ind: 0.35+0.1*Math.random()}}},
+            User.update({username: curUname}, {$push: {profRecIndex: {profid: list[i].id, ind: 0.35+0.1*Math.random(),field:'interest'}}},
                 function (err, User) {});
         }
         User.find({username: curUname}, function (err, finalUser) {
-            if(err){
-                res.send(400);
-            }
+            if(err){res.send(400);}
             else{
-                res.status(200).send(finalUser[0].profRecIndex);
+                //profIndList(profIndData, finalUser[0].profRecIndex, curUname, 0, res);
+                profRecList(finalUser[0].profRecIndex, res, function (datalist,res) {
+                    datalist = sortByKeyDec(datalist, 'totalInd');
+                    res.status(200).send(datalist.reverse());
+                })
             }
         })
     }
@@ -410,7 +463,10 @@ app.get('/user/getRec/:username', function(req, res){
             res.send(400);
         }
         else{
-            res.status(200).send(finalUser[0].profRecIndex);
+            profRecList(finalUser[0].profRecIndex, res, function (datalist,res) {
+                datalist = sortByKeyDec(datalist, 'totalInd');
+                res.status(200).send(datalist);
+            })
         }
     })
 })
