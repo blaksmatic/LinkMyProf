@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="./css/styles.css">
     <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Oswald"/>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/motion-ui/1.1.1/motion-ui.min.css"/>
+    <link rel="stylesheet" href="./lib/chartist/dist/chartist.min.css">
     <link rel="apple-touch-icon" sizes="144x144" href="./favIcon/apple-icon-144x144.png">
     <link rel="apple-touch-icon" sizes="152x152" href="./favIcon/apple-icon-152x152.png">
     <link rel="apple-touch-icon" sizes="180x180" href="./favIcon/apple-icon-180x180.png">
@@ -46,7 +46,7 @@
                     </div>
                     <div class="medium-6 columns">
                         <label>Location
-                            <input type="text" ng-model="location" placeholder="Location">
+                            <input type="text" ng-model="location" placeholder="location">
                         </label>
                     </div>
                 </div>
@@ -161,7 +161,10 @@
 <script src="./js/app.js"></script>
 <script src="./lib/ng-simplePagination/simplePagination.js"></script>
 <script src="./js/controller.js"></script>
+<script src="./js/service.js"></script>
 <script src="./js/script.js"></script>
+<script src="./lib/chartist/dist/chartist.js"></script>
+
 <script>
     $(document).foundation();
 </script>

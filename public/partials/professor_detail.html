@@ -11,20 +11,20 @@
     <div class="media-object medium-8 ">
         <div class="media-object-section">
             <div class="thumbnail">
-                <img src={{profs.img}}>
+                <img class="prof_big_img" src={{profs.img}}>
             </div>
         </div>
         <div class="media-object-section">
             <h5>Title: {{profs.title}}</h5>
             <h5>Interest: {{profs.area}}</h5>
+            <h5>Match:{{("0" + stat.totalInd*100).slice(-2)}}% :</h5>
+            <h5>Interest Match: {{("0" + stat.inteInd*100).slice(-2)}}%</h5>
+            <h5>Area Match: {{("0" + stat.areaInd*100).slice(-2)}}%</h5>
+            <h5>Similarity Match: {{("0" + stat.simiInd*100).slice(-2)}}%</h5>
         </div>
-        <div class="media-object-section">
-            <h5>Fav Match:</h5>
-            <p></p>
-            <h5>Area match:</h5>
-            <p></p>
-            <h5>Popularity match:</h5>
-            <p></p>
+        <div class="media-object-section chart1">
+
+
         </div>
     </div>
 
