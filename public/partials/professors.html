@@ -13,12 +13,12 @@
         <select ng-model="asscending" ng-options="option.name for option in assOption"></select>
     </div>
 
-    <div ng-repeat="prof in suggest | filter:input_title | orderBy:order:asscending.Asscend | startFrom: pagination.page * pagination.perPage | limitTo: pagination.perPage">
+    <div ng-repeat="prof in suggest |unique:'id' | filter:input_title | orderBy:order:asscending.Asscend| startFrom: pagination.page * pagination.perPage | limitTo: pagination.perPage">
         <div class=" medium-8">
             <div class="media-object-section medium-3">
                 <div class="thumbnail">
                     <a href="#/prof/{{prof.id}}">
-                        <img class="pro-img" src={{prof.img}}>
+                        <img class="pro-img" src={{prof.img}} alt="Smiley face">
                     </a>
                 </div>
             </div>
