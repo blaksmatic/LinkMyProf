@@ -452,58 +452,8 @@ function addindex(req, res,callback){
                     })
                 }
             })
-        })
-        //related index with likes
-        /*
-         var curUfavor = currUser1[0].favorids;
-         User.find({username: {$ne: req.params.username}}, function (err, refUser) {
-         console.log('stage3.0');
-         var favorlist = new Array();
-         for (i = 0; i < User.length; i++) {
-         var simi = 0;
-         for (j = 0; j < refUser[i].favorids.length; j++) {
-         if (contains(curUfavor, refUser[i].favorids[j])) {
-         simi++;
-         }
-         }
-         refUname = refUser[i].username;
-         favorlist.push([refUname, simi]);
-         }
-         console.log('stage3.1');
-         favorlist = sortByKey(favorlist, 'simi');
-         console.log(favorlist[0][0]);
-         User.find({username: favorlist[0][0]}, function (err, refUser2) {
-         var simiidlist = refUser2[0].favorids;
-         console.log('stage3.2');
-         for (i = 0; i < simiidlist.length; i++) {
-         User.update({username: req.params.username}, {
-         $push: {
-         profRecIndex: {
-         profid: simiidlist[i],
-         ind: 0.1 + 0.1 * Math.random(),
-         field: 'popularity'
-         }
-         }
-         },
-         function (err, User) {
-         });
-         }
-         console.log('stage3.3');
-         User.find({username: req.params.username}, function (err, finalUser) {
-         if (err) {
-         res.send(400);
-         }
-         else {
-         //profIndList(profIndData, finalUser[0].profRecIndex, curUname, 0, res);
-         console.log('stage5');
-         profRecList(finalUser[0].profRecIndex, res, function (datalist, res) {
-         datalist = sortByKeyDec(datalist, 'totalInd');
-         res.status(200).send(datalist);
-         })
-         }
-         })
-         })
-         });*/
+        });
+
         //related index with interest
         var info = currUser1[0].interest.toLowerCase();
         if (info != null) {
@@ -620,7 +570,7 @@ app.get('/user/visual/:username/',function(req, res){
                         //console.log(ulist[i].name);
                         Uobject[ulist[i].name] = {name: ulist[i].fullname, children:[]};
                     }
-                    for(j = 0; j < datalist.length; j++){
+                    for(j = 0; j < datalist.length/8; j++){
                         var newProf = {name: datalist[j].name, areaInd: datalist[j].areaInd, inteInd: datalist[j].inteInd,
                             simiInd: datalist[j].simiInd, totalInd: datalist[j].totalInd};
                         Uobject[datalist[j].univ].children.push(newProf);

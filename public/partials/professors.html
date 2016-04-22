@@ -14,27 +14,28 @@
     </div>
 
     <div ng-repeat="prof in suggest | filter:input_title | orderBy:order:asscending.Asscend | startFrom: pagination.page * pagination.perPage | limitTo: pagination.perPage">
-        <a href="#/prof/{{prof.id}}">
-            <div class="media-object medium-8 medium-3">
-                <div class="media-object-section">
-                    <div class="thumbnail">
+        <div class=" medium-8">
+            <div class="media-object-section medium-3">
+                <div class="thumbnail">
+                    <a href="#/prof/{{prof.id}}">
                         <img class="pro-img" src={{prof.img}}>
-                    </div>
+                    </a>
                 </div>
-                <div class="media-object-section medium-9">
+            </div>
+            <div class="media-object-section medium-9">
+                <a href="#/prof/{{prof.id}}">
                     <h3>{{prof.name}}</h3>
                     <h5>Title: {{prof.title}}</h5>
                     <h5>Area: {{prof.area}}</h5>
-                    <h5>University: {{prof.univ}}</h5>
-                    <h5>Match: {{Math.round(prof.totalInd*100)}}</h5>
-                </div>
-                <div class="media-object-section">
-                    <button class="button success small" ng-show="login && likes.indexOf(prof.id)==-1"
-                            ng-click="add_fav(prof)">+Favorite
-                    </button>
-                </div>
+                </a>
             </div>
-        </a>
+            <div class="media-object-section">
+                <button class="button success small" ng-show="likes.indexOf(prof.id)==-1"
+                        ng-click="add_fav(prof); $event.stopPropagation();">+Favorite
+                </button>
+            </div>
+
+        </div>
     </div>
 
     <ul class="pagination">
