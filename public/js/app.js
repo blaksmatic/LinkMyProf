@@ -25,6 +25,10 @@ app.config(function ($routeProvider) {
         .when('/home', {
             templateUrl: './partials/home.html'
         })
+        .when('/visual', {
+            templateUrl: './partials/visual.html',
+            controller: 'visualController'
+        })
 
 
 });

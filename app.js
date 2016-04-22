@@ -15,7 +15,7 @@ app.use(bodyParser.json()); // support json encoded bodies
 app.use(bodyParser.urlencoded({extended: true})); // support encoded bodies
 
 mongoose.connect('mongodb://yuhang:yyhYYH94@ds023108.mlab.com:23108/linkmyprof');
-
+var cache;
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', function () {
@@ -295,41 +295,6 @@ var stateloca = [
     ['CT', 'DE', 'DC', 'GA', 'MD', 'MA', 'NJ', 'NH', 'NY', 'PA', 'RI', 'VT']
 ];
 
-/*function profIndList(datalist, idlist, uname, k, res){
- if(k == idlist.length){
- res.status(200).send(datalist);
- }
- else{
- if(idlist[k] == 0){
- profIndList(datalist, idlist, uname, k+1, res);
- }
- else{
- Professor.find({id: idlist[k].profid},function(err, curProf) {
- //var indData = merge({ind: idlist[k].ind}, {field: idlist[k].field});
- var curdata = {
- addr: curProf[0].addr,
- img: curProf[0].img,
- area: curProf[0].area,
- url: curProf[0].url,
- title: curProf[0].title,
- phone: curProf[0].phone,
- email: curProf[0].email,
- name: curProf[0].name,
- id: curProf[0].id,
- likes: curProf[0].likes,
- univ: curProf[0].univ,
- loca: curProf[0].loca,
- field: idlist[k].field,
- ind: idlist[k].ind
- };
- //console.log(curdata);
- datalist = datalist.concat(curdata);
- profIndList(datalist, idlist, uname, k+1, res);
- })
- }
- }
- }
- */
 function sortByKeyDec(array, key) {
     return array.sort(function (a, b) {
         var x = a[key];
@@ -346,13 +311,13 @@ function profRecList(list, res, callback) {
             var simiInd = 0;
             for (j = 0; j < list.length; j++) {
                 if (curProf[i].id == list[j].profid) {
-                    if (list[j].field == 'area') {
+                    if (list[j].field.localeCompare('area')==0) {
                         areaInd = list[j].ind;
                     }
-                    else if (list[j].field == 'interest') {
+                    else if (list[j].field.localeCompare('interest')==0) {
                         inteInd = list[j].ind;
                     }
-                    else if (list[j].field == 'popularity') {
+                    else if (list[j].field.localeCompare('popularity')==0) {
                         simiInd = list[j].ind;
                     }
                 }
@@ -399,6 +364,7 @@ function indByInterst(list, array, k, curUname, req, res) {
                 function (err, User) {
                 });
         }
+        console.log('stage4');
     }
     else {
         var searchword = array[k];
@@ -416,8 +382,9 @@ function indByInterst(list, array, k, curUname, req, res) {
     }
     //console.log(k);
 }
-function addindex(req, res, callback) {
+function addindex(req, res,callback){
     User.update({username: req.params.username}, {$set: {profRecIndex: []}}, function (err, currUser) {
+        console.log('stage1');
     });
 
     User.find({username: req.params.username}, function (err, currUser1) {
@@ -452,47 +419,16 @@ function addindex(req, res, callback) {
                         function (err, User) {
                         });
                 }
-                else {
+            }
+            console.log('stage2');
+            var similist = new Array();
+            for (i = 0; i < curProfessor.length; i++) {
+                if(Math.random()>0.9){
                     User.update({username: req.params.username}, {
                             $push: {
                                 profRecIndex: {
                                     profid: curProfessor[i].id,
-                                    ind: 0.0,
-                                    field: 'area'
-                                }
-                            }
-                        },
-                        function (err, User) {
-                        });
-                }
-            }
-
-        })
-        //related index with likes
-        var curUfavor = currUser1[0].favorids;
-        User.find({username: {$ne: req.params.username}}, function (err, refUser) {
-            var favorlist = new Array();
-            for (i = 0; i < User.length; i++) {
-                var simi = 0;
-                for (j = 0; j < refUser[i].favorids.length; j++) {
-                    if (contains(curUfavor, refUser[i].favorids[j])) {
-                        simi++;
-                    }
-                }
-                refUname = refUser[i].username;
-                favorlist.push([refUname, simi]);
-            }
-            //favorlist = sortByKey(favorlist, 'simi')
-            //favorlist = favorlist.reverse;
-            console.log();
-            User.find({username: favorlist[0][0]}, function (err, refUser2) {
-                var simiidlist = refUser2[0].favorids;
-                for (i = 0; i < simiidlist.length; i++) {
-                    User.update({username: req.params.username}, {
-                            $push: {
-                                profRecIndex: {
-                                    profid: simiidlist[i],
-                                    ind: 0.1 + 0.1 * Math.random(),
+                                    ind: 0.2 * Math.random(),
                                     field: 'popularity'
                                 }
                             }
@@ -500,8 +436,74 @@ function addindex(req, res, callback) {
                         function (err, User) {
                         });
                 }
+
+            }
+            console.log('stage3.1.x');
+            User.find({username: req.params.username}, function (err, finalUser) {
+                if (err) {
+                    res.send(400);
+                }
+                else {
+                    //profIndList(profIndData, finalUser[0].profRecIndex, curUname, 0, res);
+                    console.log('stage5');
+                    profRecList(finalUser[0].profRecIndex, res, function (datalist, res) {
+                        datalist = sortByKeyDec(datalist, 'totalInd');
+                        res.status(200).send(datalist);
+                    })
+                }
             })
-        });
+        })
+        //related index with likes
+        /*
+         var curUfavor = currUser1[0].favorids;
+         User.find({username: {$ne: req.params.username}}, function (err, refUser) {
+         console.log('stage3.0');
+         var favorlist = new Array();
+         for (i = 0; i < User.length; i++) {
+         var simi = 0;
+         for (j = 0; j < refUser[i].favorids.length; j++) {
+         if (contains(curUfavor, refUser[i].favorids[j])) {
+         simi++;
+         }
+         }
+         refUname = refUser[i].username;
+         favorlist.push([refUname, simi]);
+         }
+         console.log('stage3.1');
+         favorlist = sortByKey(favorlist, 'simi');
+         console.log(favorlist[0][0]);
+         User.find({username: favorlist[0][0]}, function (err, refUser2) {
+         var simiidlist = refUser2[0].favorids;
+         console.log('stage3.2');
+         for (i = 0; i < simiidlist.length; i++) {
+         User.update({username: req.params.username}, {
+         $push: {
+         profRecIndex: {
+         profid: simiidlist[i],
+         ind: 0.1 + 0.1 * Math.random(),
+         field: 'popularity'
+         }
+         }
+         },
+         function (err, User) {
+         });
+         }
+         console.log('stage3.3');
+         User.find({username: req.params.username}, function (err, finalUser) {
+         if (err) {
+         res.send(400);
+         }
+         else {
+         //profIndList(profIndData, finalUser[0].profRecIndex, curUname, 0, res);
+         console.log('stage5');
+         profRecList(finalUser[0].profRecIndex, res, function (datalist, res) {
+         datalist = sortByKeyDec(datalist, 'totalInd');
+         res.status(200).send(datalist);
+         })
+         }
+         })
+         })
+         });*/
         //related index with interest
         var info = currUser1[0].interest.toLowerCase();
         if (info != null) {
@@ -527,23 +529,9 @@ function addindex(req, res, callback) {
     callback(req, res);
 }
 
-function sleep(miliseconds) {
-
-}
 app.get('/user/calRec/:username', function (req, res) {
-    addindex(req, res, function (req, res) {
-        User.find({username: req.params.username}, function (err, finalUser) {
-            if (err) {
-                res.send(400);
-            }
-            else {
-                //profIndList(profIndData, finalUser[0].profRecIndex, curUname, 0, res);
-                profRecList(finalUser[0].profRecIndex, res, function (datalist, res) {
-                    datalist = sortByKeyDec(datalist, 'totalInd');
-                    res.status(200).send(datalist);
-                })
-            }
-        })
+    addindex(req,res,function(req,res) {
+
     })
 });
 
@@ -576,14 +564,13 @@ app.get('/user/getOneRec/:username/:profid', function (req, res) {
                 var simiInd = 0;
                 for (j = 0; j < finalUser[0].profRecIndex.length; j++) {
                     if (curProf[0].id == finalUser[0].profRecIndex[j].profid) {
-                        if (finalUser[0].profRecIndex[j].field.localeCompare('area') == 0) {
+                        if (finalUser[0].profRecIndex[j].field.localeCompare('area')==0) {
                             areaInd = finalUser[0].profRecIndex[j].ind;
-                            console.log(areaInd);
                         }
-                        else if (finalUser[0].profRecIndex[j].field.localeCompare('interest') == 0) {
+                        else if (finalUser[0].profRecIndex[j].field.localeCompare('interest')==0) {
                             inteInd = finalUser[0].profRecIndex[j].ind;
                         }
-                        else if (finalUser[0].profRecIndex[j].field.localeCompare('popularity' == 0)) {
+                        else if (finalUser[0].profRecIndex[j].field.localeCompare('popularity')==0) {
                             simiInd = finalUser[0].profRecIndex[j].ind;
                         }
                     }
@@ -609,6 +596,71 @@ app.get('/user/getOneRec/:username/:profid', function (req, res) {
                     totalInd: areaInd + inteInd + simiInd //total index
                 };
                 res.send(curdata);
+
+            })
+        }
+    })
+})
+//get one's data for visualization
+app.get('/user/visual/:username/',function(req, res){
+    User.find({username: req.params.username}, function (err, finalUser) {
+        if (err) {
+            res.send(400);
+        }
+        else {
+            profRecList(finalUser[0].profRecIndex, res, function (datalist, res) {
+                var visualdata = {name: req.params.username, children:[]};
+                var west = {name: 'West', children:[]};
+                var east = {name: 'East', children:[]};
+                var south = {name: 'South', children:[]};
+                var middle = {name: 'Middle', children:[]};
+                University.find({}, function(err, ulist) {
+                    var Uobject = new Object();
+                    for(i = 0; i < ulist.length; i++){
+                        //console.log(ulist[i].name);
+                        Uobject[ulist[i].name] = {name: ulist[i].fullname, children:[]};
+                    }
+                    for(j = 0; j < datalist.length; j++){
+                        var newProf = {name: datalist[j].name, areaInd: datalist[j].areaInd, inteInd: datalist[j].inteInd,
+                            simiInd: datalist[j].simiInd, totalInd: datalist[j].totalInd};
+                        Uobject[datalist[j].univ].children.push(newProf);
+                    }
+                    east.children.push(Uobject['princeton']);
+                    east.children.push(Uobject['harvard']);
+                    east.children.push(Uobject['yale']);
+                    east.children.push(Uobject['columbia']);
+                    east.children.push(Uobject['mit']);
+                    east.children.push(Uobject['upenn']);
+                    east.children.push(Uobject['duke']);
+                    east.children.push(Uobject['brown']);
+                    east.children.push(Uobject['jhu']);
+                    east.children.push(Uobject['cornell']);
+                    east.children.push(Uobject['virginia']);
+                    east.children.push(Uobject['unc']);
+                    east.children.push(Uobject['nyu']);
+                    east.children.push(Uobject['psu']);
+                    east.children.push(Uobject['umd']);
+                    east.children.push(Uobject['umass']);
+                    middle.children.push(Uobject['cmu']);
+                    middle.children.push(Uobject['wisc']);
+                    middle.children.push(Uobject['umich']);
+                    middle.children.push(Uobject['uiuc']);
+                    west.children.push(Uobject['caltech']);
+                    west.children.push(Uobject['ucb']);
+                    west.children.push(Uobject['stanford']);
+                    west.children.push(Uobject['ucla']);
+                    west.children.push(Uobject['uci']);
+                    west.children.push(Uobject['ucsd']);
+                    west.children.push(Uobject['usc']);
+                    west.children.push(Uobject['uw']);
+                    south.children.push(Uobject['rice']);
+                    south.children.push(Uobject['utexas']);
+                    visualdata.children.push(east);
+                    visualdata.children.push(west);
+                    visualdata.children.push(middle);
+                    visualdata.children.push(south);
+                    res.send(visualdata);
+                })
             })
         }
     })
@@ -619,3 +671,4 @@ app.get('/user/getOneRec/:username/:profid', function (req, res) {
 
 server.listen(3000);
 console.log("Server listen to 3000");
+
