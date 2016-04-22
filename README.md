@@ -7,6 +7,9 @@ you can do it yourself. Also, the server is very slow (what you are expecting fr
 The server
 http://162.243.27.217:3000/#/
 
+Title Page
+![Alt text](/demo/hp.png?raw=true "Optional Title")
+
 Home page
 ![Alt text](/demo/home.png?raw=true "Optional Title")
 
