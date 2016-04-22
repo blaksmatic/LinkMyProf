@@ -199,14 +199,14 @@ app.controller('visualController', ['$scope', '$http', '$routeParams', 'CommonDa
         method: 'GET',
         url: '/user/visual/' + CommonData.getData().username
     };
+    if (CommonData.getData().username) {
+        $http(request).then(function (response) {
+            $scope.visual = response.data;
+            console.log(response.data);
+            make_visual($scope.visual);
 
-    $http(request).then(function (response) {
-        $scope.visual = response.data;
-        console.log(response.data);
-        make_visual($scope.visual);
-
-    });
-
+        });
+    }
 
     function make_visual(json) {
 
@@ -355,38 +355,22 @@ app.controller('visualController', ['$scope', '$http', '$routeParams', 'CommonDa
             });
         }
 
-        function computeRadius(d) {
-            if (d.children || d._children) return radius + (radius * nbEndNodes(d) / 30);
-            else return radius;
+        function computeRadius(nodes) {
+            if (nodes.children || nodes._children) return 10;
+            else return 5;
         }
 
-        function nbEndNodes(n) {
-            nb = 0;
-            if (n.children) {
-                n.children.forEach(function (c) {
-                    nb += nbEndNodes(c);
-                });
-            }
-            else if (n._children) {
-                n._children.forEach(function (c) {
-                    nb += nbEndNodes(c);
-                });
-            }
-            else nb++;
 
-            return nb;
-        }
-
-        function click(d) {
-            if (d.children) {
-                d._children = d.children;
-                d.children = null;
+        function click(click) {
+            if (click.children) {
+                click._children = click.children;
+                click.children = null;
             }
             else {
-                d.children = d._children;
-                d._children = null;
+                click.children = click._children;
+                click._children = null;
             }
-            update(d);
+            update(click);
         }
 
         function collapse(d) {

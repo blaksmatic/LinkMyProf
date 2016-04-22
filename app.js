@@ -570,7 +570,7 @@ app.get('/user/visual/:username/',function(req, res){
                         //console.log(ulist[i].name);
                         Uobject[ulist[i].name] = {name: ulist[i].fullname, children:[]};
                     }
-                    for(j = 0; j < datalist.length/8; j++){
+                    for(j = 0; j < datalist.length/6; j++){
                         var newProf = {name: datalist[j].name, areaInd: datalist[j].areaInd, inteInd: datalist[j].inteInd,
                             simiInd: datalist[j].simiInd, totalInd: datalist[j].totalInd};
                         Uobject[datalist[j].univ].children.push(newProf);
