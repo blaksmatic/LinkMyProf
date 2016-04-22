@@ -252,7 +252,7 @@ app.post('/user/compare', function (req, res) {
                     simi++;
                 }
             }
-            res.send({simi});
+            res.send(simi);
         })
     })
 })
