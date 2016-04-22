@@ -65,7 +65,7 @@ app.controller('mainController', ['$scope', '$http', '$location', 'Pagination', 
             method: 'GET',
             url: '/user/getRec/' + CommonData.getData().username
         }).then(function (data) {
-            console.log(data.data);
+            //console.log(data.data);
             $scope.suggest = data.data.slice(0, 99);
             $scope.pagination = Pagination.getNew(10);
             $scope.pagination.numPages = Math.ceil($scope.suggest.length / $scope.pagination.perPage);
