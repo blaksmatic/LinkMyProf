@@ -227,6 +227,7 @@ app.controller('visualController', ['$scope', '$http', '$routeParams', 'CommonDa
 
         var i = 0;
         var root = newJson;
+        console.log(root);
 
         var tree = d3.layout.tree()
             .size([height, width]);
@@ -242,7 +243,7 @@ app.controller('visualController', ['$scope', '$http', '$routeParams', 'CommonDa
             .append("g")
             .attr("transform", "translate(" + maxLabel + ",0)");
 
-        root.x0 = height / 2;
+        root.x0 = height;
         root.y0 = 0;
 
         root.children.forEach(collapse);

@@ -24,7 +24,7 @@
     <div class="log_in text-right">
         <button class="log_in_buttom button" ng-show="!login" type="button" data-open="Login-form">Login
         </button>
-        <h4 ng-show="login">Hi!{{username}}</h4>
+        <h4 ng-show="login" class = "log_in_buttom button">Hi!{{username}}</h4>
         <button class="log_in_buttom button" ng-show="login" type="button" ng-click="log_out()">Logout</button>
         <div class="reveal" id="Login-form" data-reveal>
             <form>

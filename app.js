@@ -311,13 +311,13 @@ function profRecList(list, res, callback) {
             var simiInd = 0;
             for (j = 0; j < list.length; j++) {
                 if (curProf[i].id == list[j].profid) {
-                    if (list[j].field.localeCompare('area')==0) {
+                    if (list[j].field.localeCompare('area') == 0) {
                         areaInd = list[j].ind;
                     }
-                    else if (list[j].field.localeCompare('interest')==0) {
+                    else if (list[j].field.localeCompare('interest') == 0) {
                         inteInd = list[j].ind;
                     }
-                    else if (list[j].field.localeCompare('popularity')==0) {
+                    else if (list[j].field.localeCompare('popularity') == 0) {
                         simiInd = list[j].ind;
                     }
                 }
@@ -382,7 +382,7 @@ function indByInterst(list, array, k, curUname, req, res) {
     }
     //console.log(k);
 }
-function addindex(req, res,callback){
+function addindex(req, res, callback) {
     User.update({username: req.params.username}, {$set: {profRecIndex: []}}, function (err, currUser) {
         console.log('stage1');
     });
@@ -423,7 +423,7 @@ function addindex(req, res,callback){
             console.log('stage2');
             var similist = new Array();
             for (i = 0; i < curProfessor.length; i++) {
-                if(Math.random()>0.9){
+                if (Math.random() > 0.9) {
                     User.update({username: req.params.username}, {
                             $push: {
                                 profRecIndex: {
@@ -480,7 +480,7 @@ function addindex(req, res,callback){
 }
 
 app.get('/user/calRec/:username', function (req, res) {
-    addindex(req,res,function(req,res) {
+    addindex(req, res, function (req, res) {
 
     })
 });
@@ -514,13 +514,13 @@ app.get('/user/getOneRec/:username/:profid', function (req, res) {
                 var simiInd = 0;
                 for (j = 0; j < finalUser[0].profRecIndex.length; j++) {
                     if (curProf[0].id == finalUser[0].profRecIndex[j].profid) {
-                        if (finalUser[0].profRecIndex[j].field.localeCompare('area')==0) {
+                        if (finalUser[0].profRecIndex[j].field.localeCompare('area') == 0) {
                             areaInd = finalUser[0].profRecIndex[j].ind;
                         }
-                        else if (finalUser[0].profRecIndex[j].field.localeCompare('interest')==0) {
+                        else if (finalUser[0].profRecIndex[j].field.localeCompare('interest') == 0) {
                             inteInd = finalUser[0].profRecIndex[j].ind;
                         }
-                        else if (finalUser[0].profRecIndex[j].field.localeCompare('popularity')==0) {
+                        else if (finalUser[0].profRecIndex[j].field.localeCompare('popularity') == 0) {
                             simiInd = finalUser[0].profRecIndex[j].ind;
                         }
                     }
@@ -552,27 +552,35 @@ app.get('/user/getOneRec/:username/:profid', function (req, res) {
     })
 })
 //get one's data for visualization
-app.get('/user/visual/:username/',function(req, res){
+app.get('/user/visual/:username/', function (req, res) {
     User.find({username: req.params.username}, function (err, finalUser) {
         if (err) {
             res.send(400);
         }
         else {
             profRecList(finalUser[0].profRecIndex, res, function (datalist, res) {
-                var visualdata = {name: req.params.username, children:[]};
-                var west = {name: 'West', children:[]};
-                var east = {name: 'East', children:[]};
-                var south = {name: 'South', children:[]};
-                var middle = {name: 'Middle', children:[]};
-                University.find({}, function(err, ulist) {
+                var visualdata = {name: req.params.username, children: []};
+                var west = {name: 'West', children: []};
+                var east = {name: 'East', children: []};
+                var south = {name: 'South', children: []};
+                var middle = {name: 'Middle', children: []};
+                University.find({}, function (err, ulist) {
                     var Uobject = new Object();
-                    for(i = 0; i < ulist.length; i++){
+                    for (i = 0; i < ulist.length; i++) {
                         //console.log(ulist[i].name);
-                        Uobject[ulist[i].name] = {name: ulist[i].fullname, children:[]};
+                        Uobject[ulist[i].name] = {name: ulist[i].fullname, children: []};
                     }
-                    for(j = 0; j < datalist.length/6; j++){
-                        var newProf = {name: datalist[j].name, areaInd: datalist[j].areaInd, inteInd: datalist[j].inteInd,
-                            simiInd: datalist[j].simiInd, totalInd: datalist[j].totalInd};
+                    var kk = datalist.length;
+                    for (j = 0; j < kk; j ++) {
+                        if (datalist[j].totalInd < 0.1) {
+                            continue;
+                        }
+                        var newProf = {
+                            name: datalist[j].name,
+                            children: [
+                                {name: "Match:" + Math.round(datalist[j].totalInd * 100).toString()}
+                            ]
+                        };
                         Uobject[datalist[j].univ].children.push(newProf);
                     }
                     east.children.push(Uobject['princeton']);
